@@ -131,7 +131,7 @@ export class Player {
 
     tick(dt) {
         const colliders = this.collisions.getColliders(this);
-        const platformWeStandOn = colliders.find(collider => collider.collider.h >= canvasHeight - this.collider.y);
+        const platformWeStandOn = colliders.find(collider => collider.collider.h >= canvasHeight - (this.collider.y + this.collider.r));
         this.colliding = this.collider.y === canvasHeight || platformWeStandOn;
         if (this.colliding) {
             if (this.timeFromCollisionEnd > 0) {
