@@ -74,11 +74,8 @@ export class CollisionContainer {
         this.entities.push(entity);
     }
 
-    removeEntities(entity) {
-        const i = this.entities.findIndex(e => e === entity);
-        if (i !== -1) {
-            this.entities.splice(i, 1);
-        }
+    removeEntities(entities) {
+        this.entities = this.entities.filter(entity => !entities.includes(entity));
     }
 
     tick() {

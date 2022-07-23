@@ -44,6 +44,6 @@ export class ParticleContainer {
 
         const deadParticles = this.particles.filter(particle => !particle.isAlive());
         this.particles = this.particles.filter(particle => particle.isAlive());
-        this.scene.removeEntity(deadParticles);
+        this.scene.removeEntities(deadParticles);
     }
 }
