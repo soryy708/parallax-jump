@@ -15,11 +15,18 @@
             height: 100vh;
             height: calc(var(--vh, 1vh) * 100);
         }
+
+        #backgroundMusic {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
     </style>
 </head>
 
 <body>
     <canvas id="main"></canvas>
+    <audio id="backgroundMusic" controls autoplay loop src="game/asset/audio/bg-track.mp3"></audio>
     <script>
         const setVhVariable = () => {
             document.documentElement.style
