@@ -43,6 +43,20 @@ export class Renderer {
                         this.context.fill();
                         break;
                     }
+                    case 'ellipse': {
+                        this.context.beginPath();
+                        this.context.ellipse(
+                            renderable.x,
+                            renderable.y,
+                            renderable.r,
+                            renderable.r2 || renderable.r,
+                            0,
+                            0,
+                            2 * Math.PI,
+                        );
+                        this.context.fill();
+                        break;
+                    }
                     case 'text': {
                         this.context.font = renderable.font;
                         this.context.fillText(renderable.text, renderable.x, renderable.y);

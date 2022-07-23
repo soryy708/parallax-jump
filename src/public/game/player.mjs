@@ -14,7 +14,7 @@ export class Player {
 
         // Renderable
         this.renderable = new Renderable();
-        this.renderable.type = 'circle';
+        this.renderable.type = 'ellipse';
         this.renderable.r = 8;
 
         // Collider
@@ -142,14 +142,21 @@ export class Player {
                     colliders.forEach(collider => {
                         this.createLandingParticleCloud(collider.velocity || 0);
                     });
+                    this.renderable.r2 = this.renderable.r * 0.75;
                 }
             }
             this.timeFromCollisionEnd = 0;
         } else {
             this.timeFromCollisionEnd += dt;
+            this.renderable.r2 = this.renderable.r;
         }
 
         if (this.jumping) {
+            if (this.isDoubleJump()) {
+                this.renderable.r2 = this.renderable.r * 1.5;
+            } else {
+                this.renderable.r2 = this.renderable.r * 1.25;
+            }
             this.acceleration = clamp(this.acceleration + this.jumpAcceleration * dt, this.accelerationClampMin, this.accelerationClampMax);
             if (this.doubleJumped) {
                 this.createDoubleJumpParticle();
