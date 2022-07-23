@@ -25,7 +25,7 @@ export class Platform {
     }
 
     isExpired() {
-        return this.renderable.x < -1 * this.renderable.w;
+        return this.renderable.x <= -1 * this.renderable.w;
     }
 }
 
