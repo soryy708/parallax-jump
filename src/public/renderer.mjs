@@ -52,7 +52,7 @@ export class Renderer {
                             renderable.r2 || renderable.r,
                             0,
                             0,
-                            2 * Math.PI,
+                            2 * Math.PI
                         );
                         this.context.fill();
                         break;
