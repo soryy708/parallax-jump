@@ -68,6 +68,7 @@ export class Player {
         this.jumpTime = 0;
         this.timeFromCollisionEnd = 0;
         this.doubleJumped = false;
+        this.died = false;
     }
 
     createLandingParticleCloud(vx) {
@@ -85,6 +86,27 @@ export class Player {
                 particleVelocityY,
                 particleTtl
             ));
+        }
+    }
+
+    createBloodParticleCloud() {
+        const particleCount = 32;
+        for (let i = 0; i < particleCount; ++i) {
+            const particleRadius = randomInRange(1, 4);
+            const particleVelocityX = randomInRange(-16, 16) + this.velocityX;
+            const particleVelocityY = randomInRange(-16, 0);
+            const particleTtl = randomInRange(2, 5);
+            const particle = new Particle(
+                this.renderable.x,
+                this.renderable.y + this.renderable.r / 2,
+                particleRadius,
+                particleVelocityX,
+                particleVelocityY,
+                particleTtl
+            );
+            particle.renderable.colorG = 0;
+            particle.renderable.colorB = 0;
+            this.particles.add(particle);
         }
     }
 
@@ -114,7 +136,8 @@ export class Player {
         if (this.colliding) {
             if (this.timeFromCollisionEnd > 0) {
                 if (colliders.length === 0) {
-                    this.createLandingParticleCloud(0);
+                    this.createBloodParticleCloud();
+                    this.died = true;
                 } else {
                     colliders.forEach(collider => {
                         this.createLandingParticleCloud(collider.velocity || 0);
@@ -158,5 +181,9 @@ export class Player {
 
     isDoubleJump() {
         return !this.collding && this.timeFromCollisionEnd >= this.jumpGrace;
+    }
+
+    isDead() {
+        return this.died;
     }
 }

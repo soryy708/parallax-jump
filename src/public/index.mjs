@@ -73,7 +73,8 @@ setInterval(() => {
     maxScore = Math.max(score, maxScore);
     text.setText(getScoreText());
 
-    if (player.renderable.y === canvasHeight) {
+    if (player.isDead()) {
         resetGame();
     }
+
 }, fpsToMs(logicFps));
