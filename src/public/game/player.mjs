@@ -130,20 +130,20 @@ export class Player {
     }
 
     tick(dt) {
+        if (this.renderable.y === canvasHeight) {
+            this.createBloodParticleCloud();
+            this.died = true;
+        }
+
         const colliders = this.collisions.getColliders(this);
         const platformWeStandOn = colliders.find(collider => collider.collider.h >= canvasHeight - (this.collider.y + this.collider.r));
         this.colliding = this.collider.y === canvasHeight || platformWeStandOn;
         if (this.colliding) {
             if (this.timeFromCollisionEnd > 0) {
-                if (colliders.length === 0) {
-                    this.createBloodParticleCloud();
-                    this.died = true;
-                } else {
-                    colliders.forEach(collider => {
-                        this.createLandingParticleCloud(collider.velocity || 0);
-                    });
-                    this.renderable.r2 = this.renderable.r * 0.75;
-                }
+                colliders.forEach(collider => {
+                    this.createLandingParticleCloud(collider.velocity || 0);
+                });
+                this.renderable.r2 = this.renderable.r * 0.75;
             }
             this.timeFromCollisionEnd = 0;
         } else {
