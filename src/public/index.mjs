@@ -1,6 +1,6 @@
 import { DeltaTime } from './deltaTime.mjs';
 import { Keyboard } from './keyboard.mjs';
-import { Renderer } from './renderer.mjs';
+import { Renderable, Renderer } from './renderer.mjs';
 import { Scene } from './scene.mjs';
 import { canvasWidth, canvasHeight } from './game/globals.mjs';
 import { Player } from './game/player.mjs';
@@ -37,6 +37,21 @@ let maxScore = 0;
 const getScoreText = () => maxScore === score ? Math.floor(score) : `${Math.floor(score)}/${Math.floor(maxScore)}`;
 const text = new TextEntity(getScoreText(), 0, 32, 32);
 scene.addEntity(text);
+
+class Floor {
+    constructor() {
+        this.renderable = new Renderable();
+        this.renderable.type = 'rect';
+        this.renderable.h = 1;
+        this.renderable.w = canvasWidth;
+        this.renderable.x = 0;
+        this.renderable.y = canvasHeight - this.renderable.h;
+        this.renderable.colorG = 0;
+        this.renderable.colorB = 0;
+    }
+}
+
+scene.addEntity(new Floor());
 
 const resetGame = () => {
     platforms.clearAll();
