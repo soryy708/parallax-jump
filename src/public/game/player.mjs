@@ -166,8 +166,10 @@ export class Player {
                 this.jumping = false;
             }
         } else if (this.colliding && platformWeStandOn || this.collider.y === canvasHeight) {
-            this.acceleration = 0;
-            this.velocityY = 0;
+            if (this.velocityY >= 0) {
+                this.acceleration = 0;
+                this.velocityY = 0;
+            }
         } else {
             this.acceleration = clamp(this.acceleration + this.mass * g * dt, this.accelerationClampMin, this.accelerationClampMax);
         }
