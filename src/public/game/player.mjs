@@ -3,14 +3,16 @@ import { canvasWidth, canvasHeight } from './globals.mjs';
 import { clamp, randomInRange } from './util.mjs';
 import { CircleCollider } from './collision.mjs';
 import { Particle } from './particle.mjs';
+import { PlayerIndicator } from './indicator.mjs';
 
 const g = 9.8; // https://en.wikipedia.org/wiki/Gravitational_constant
 
 export class Player {
-    constructor(keyboard, collisions, particles) {
+    constructor(keyboard, collisions, particles, scene) {
         this.keyboard = keyboard;
         this.collisions = collisions;
         this.particles = particles;
+        this.scene = scene;
 
         // Renderable
         this.renderable = new Renderable();
@@ -47,6 +49,8 @@ export class Player {
         this.keyboard.onKeyUp('KeyW', this.onJumpKeyUp.bind(this));
         this.keyboard.onKeyDown('ArrowUp', this.onJumpKeyDown.bind(this));
         this.keyboard.onKeyUp('ArrowUp', this.onJumpKeyUp.bind(this));
+
+        this.scene.addEntity(this);
     }
 
     onJumpKeyDown() {
@@ -77,6 +81,20 @@ export class Player {
         this.timeFromCollisionEnd = 0;
         this.doubleJumped = false;
         this.died = false;
+    }
+
+    showIndicator() {
+        if (!this.indicator) {
+            this.indicator = new PlayerIndicator();
+            this.scene.addEntity(this.indicator);
+        }
+    }
+
+    hideIndicator() {
+        if (this.indicator) {
+            this.scene.removeEntity(this.indicator);
+            this.indicator = null;
+        }
     }
 
     createLandingParticleCloud(vx) {
@@ -196,6 +214,15 @@ export class Player {
 
         this.collider.x = this.renderable.x;
         this.collider.y = this.renderable.y;
+
+        if (this.renderable.y - this.renderable.r <= 0) {
+            this.showIndicator();
+        } else {
+            this.hideIndicator();
+        }
+        if (this.indicator) {
+            this.indicator.update(this.renderable.x, Math.abs(this.renderable.y - this.renderable.r) / 3);
+        }
     }
 
     canJump() {

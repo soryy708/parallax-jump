@@ -29,8 +29,7 @@ renderer.addScene(scene);
 const collisions = new CollisionContainer();
 const particles = new ParticleContainer(scene);
 
-const player = new Player(keyboard, collisions, particles);
-scene.addEntity(player);
+const player = new Player(keyboard, collisions, particles, scene);
 const platforms = new PlatformsContainer(scene, collisions);
 let score = 0;
 let maxScore = 0;
