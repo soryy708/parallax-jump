@@ -41,19 +41,27 @@ export class Player {
         this.reset();
 
         // Input
-        this.keyboard.onKeyDown('Space', () => {
-            if (this.canJump()) {
-                this.jumping = true;
-                this.jumpTime = 0;
-                this.acceleration = 0;
-                this.velocityY = this.jumpForce * -1;
+        this.keyboard.onKeyDown('Space', this.onJumpKeyDown.bind(this));
+        this.keyboard.onKeyUp('Space', this.onJumpKeyUp.bind(this));
+        this.keyboard.onKeyDown('KeyW', this.onJumpKeyDown.bind(this));
+        this.keyboard.onKeyUp('KeyW', this.onJumpKeyUp.bind(this));
+        this.keyboard.onKeyDown('ArrowUp', this.onJumpKeyDown.bind(this));
+        this.keyboard.onKeyUp('ArrowUp', this.onJumpKeyUp.bind(this));
+    }
 
-                this.doubleJumped = this.isDoubleJump();
-            }
-        });
-        this.keyboard.onKeyUp('Space', () => {
-            this.jumping = false;
-        });
+    onJumpKeyDown() {
+        if (this.canJump()) {
+            this.jumping = true;
+            this.jumpTime = 0;
+            this.acceleration = 0;
+            this.velocityY = this.jumpForce * -1;
+
+            this.doubleJumped = this.isDoubleJump();
+        }
+    }
+
+    onJumpKeyUp() {
+        this.jumping = false;
     }
 
     reset() {
@@ -174,7 +182,13 @@ export class Player {
             this.acceleration = clamp(this.acceleration + this.mass * g * dt, this.accelerationClampMin, this.accelerationClampMax);
         }
 
-        this.velocityX = ((this.keyboard.isDown('KeyA') ? -1 : 0) + (this.keyboard.isDown('KeyD') ? 1 : 0)) * this.velocityXMagnitude;
+        this.velocityX = (((
+            this.keyboard.isDown('KeyA') ||
+            this.keyboard.isDown('ArrowLeft')
+        ) ? -1 : 0) + ((
+            this.keyboard.isDown('KeyD') ||
+            this.keyboard.isDown('ArrowRight')
+        )? 1 : 0)) * this.velocityXMagnitude;
 
         this.renderable.y = clamp(this.renderable.y + this.velocityY * dt, -Infinity, canvasHeight);
         this.velocityY = clamp(this.velocityY + this.acceleration * dt, this.velocityYClampMin, this.velocityYClampMax);
