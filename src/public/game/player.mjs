@@ -8,11 +8,13 @@ import { PlayerIndicator } from './indicator.mjs';
 const g = 9.8; // https://en.wikipedia.org/wiki/Gravitational_constant
 
 export class Player {
-    constructor(keyboard, collisions, particles, scene) {
+    constructor(keyboard, collisions, particles, scene, canvas) {
         this.keyboard = keyboard;
         this.collisions = collisions;
         this.particles = particles;
         this.scene = scene;
+        this.canvas = canvas;
+        this.canvasRotation = 10;
 
         // Renderable
         this.renderable = new Renderable();
@@ -155,6 +157,12 @@ export class Player {
         this.particles.add(particle);
     }
 
+    onCollisionWithPlatform(collider) {
+        this.createLandingParticleCloud(collider.velocity || 0);
+        this.renderable.r2 = this.renderable.r * 0.75;
+        this.canvas.style.transform = `rotateX(${this.canvasRotation *= -1}deg)`;
+    }
+
     tick(dt) {
         if (this.renderable.y === canvasHeight) {
             this.createBloodParticleCloud();
@@ -166,10 +174,9 @@ export class Player {
         this.colliding = this.collider.y === canvasHeight || platformWeStandOn;
         if (this.colliding) {
             if (this.timeFromCollisionEnd > 0) {
-                colliders.forEach(collider => {
-                    this.createLandingParticleCloud(collider.velocity || 0);
-                });
-                this.renderable.r2 = this.renderable.r * 0.75;
+                colliders.forEach(this.onCollisionWithPlatform.bind(this));
+            } else {
+                this.canvas.style.transform = `rotateX(0)`;
             }
             this.timeFromCollisionEnd = 0;
         } else {
@@ -206,7 +213,7 @@ export class Player {
         ) ? -1 : 0) + ((
             this.keyboard.isDown('KeyD') ||
             this.keyboard.isDown('ArrowRight')
-        )? 1 : 0)) * this.velocityXMagnitude;
+        ) ? 1 : 0)) * this.velocityXMagnitude;
 
         this.renderable.y = clamp(this.renderable.y + this.velocityY * dt, -Infinity, canvasHeight);
         this.velocityY = clamp(this.velocityY + this.acceleration * dt, this.velocityYClampMin, this.velocityYClampMax);
