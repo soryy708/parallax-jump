@@ -151,9 +151,9 @@ export class Player {
             particleVelocityY,
             particleTtl
         );
-        particle.renderable.colorR = randomInRange(0.5, 1);
-        particle.renderable.colorG = randomInRange(0.5, 1);
-        particle.renderable.colorB = 0;
+        particle.renderable.colorR = 1;
+        particle.renderable.colorG = 0.8;
+        particle.renderable.colorB = randomInRange(0, 0.5);
         this.particles.add(particle);
     }
 
