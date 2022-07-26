@@ -37,7 +37,7 @@ export class Player {
         this.velocityXMagnitude = 10;
 
         // Jumping
-        this.jumpGrace = 1;
+        this.jumpGrace = 2;
         this.maxJumpTime = 3;
         this.jumpAcceleration = -1 * this.mass;
         this.jumpForce = 10;
