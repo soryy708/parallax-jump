@@ -2,9 +2,14 @@ import { Renderable } from "../renderer.mjs";
 import { RectangleCollider } from "./collision.mjs";
 import { canvasWidth, canvasHeight } from './globals.mjs';
 import { clamp, randomInRange } from './util.mjs';
+import { hslToRgb } from './color.mjs';
+
+const minPlatformVelocity = -40;
+const maxPlatformVelocity = -5;
 
 export class Platform {
     constructor(height, velocity) {
+
         this.maxWidth = 48;
         this.minWidth = 16;
 
@@ -14,6 +19,16 @@ export class Platform {
         this.renderable.y = canvasHeight - height;
         this.renderable.w = clamp(height / canvasHeight * this.maxWidth, this.minWidth, this.maxWidth);
         this.renderable.h = height;
+
+        const minLightness = 0.4;
+        const lightnessOffset = 1 - (velocity - minPlatformVelocity) / (maxPlatformVelocity - minPlatformVelocity);
+        const lightness = minLightness + (lightnessOffset * (1 - minLightness));
+        const hsl = { h: 0, s: 0, l: lightness };
+        const rgb = hslToRgb(hsl);
+        this.renderable.colorR = rgb.r / 255;
+        this.renderable.colorG = rgb.g / 255;
+        this.renderable.colorB = rgb.b / 255;
+
         this.velocity = velocity;
 
         this.collider = new RectangleCollider(this.renderable.x, this.renderable.y, this.renderable.w, this.renderable.h);
@@ -39,8 +54,6 @@ export class PlatformsContainer {
 
         this.minPlatformHeight = 16;
         this.maxPlatformHeight = canvasHeight * 0.66;
-        this.minPlatformVelocity = -40;
-        this.maxPlatformVelocity = -5;
     }
 
     tick(dt) {
@@ -49,7 +62,7 @@ export class PlatformsContainer {
             this.timeFromLastSpawn = 0;
             this.spawnPlatform(
                 randomInRange(this.minPlatformHeight, this.maxPlatformHeight),
-                randomInRange(this.minPlatformVelocity, this.maxPlatformVelocity)
+                randomInRange(minPlatformVelocity, maxPlatformVelocity)
             );
         }
 
