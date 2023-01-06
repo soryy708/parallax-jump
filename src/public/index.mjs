@@ -32,7 +32,7 @@ const particles = new ParticleContainer(scene);
 const player = new Player(keyboard, collisions, particles, scene, canvas);
 const platforms = new PlatformsContainer(scene, collisions);
 let score = 0;
-let maxScore = 0;
+let maxScore = Number(window.localStorage.getItem('maxScore') || '0');
 const getScoreText = () => maxScore === score ? Math.floor(score) : `${Math.floor(score)}/${Math.floor(maxScore)}`;
 const text = new TextEntity(getScoreText(), 0, 32, 32);
 scene.addEntity(text);
@@ -57,6 +57,7 @@ const resetGame = () => {
     player.reset();
     platforms.spawnFirstPlatform();
     maxScore = Math.max(score, maxScore);
+    window.localStorage.setItem('maxScore', `${maxScore}`);
     score = 0;
 };
 
