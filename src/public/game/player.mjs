@@ -164,6 +164,11 @@ export class Player {
     }
 
     tick(dt) {
+        const remainingDoubleJump = this.doubleJumped ? (this.jumping ? (1 - this.jumpTime / this.maxJumpTime) : 0) : 1;
+        const jumpIndicator = this.colliding ? 1 : remainingDoubleJump;
+        const yellowness = jumpIndicator;
+        this.renderable.colorB = 1 - yellowness;
+
         if (this.renderable.y === canvasHeight) {
             this.createBloodParticleCloud();
             this.died = true;
