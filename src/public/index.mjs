@@ -9,6 +9,7 @@ import { PlatformsContainer } from './game/platform.mjs';
 import { CollisionContainer } from './game/collision.mjs';
 import { ParticleContainer } from './game/particle.mjs';
 import { TextEntity } from './game/text.mjs';
+import { Background } from './game/background.mjs';
 
 const logicFps = 60;
 const canvas = document.getElementById('main');
@@ -55,6 +56,8 @@ class Floor {
 
 scene.addEntity(new Floor());
 
+const background = new Background(document.getElementsByTagName('body')[0]);
+
 const resetGame = () => {
     platforms.clearAll();
     player.reset();
@@ -62,6 +65,7 @@ const resetGame = () => {
     maxScore = Math.max(score, maxScore);
     window.localStorage.setItem('maxScore', `${maxScore}`);
     score = 0;
+    background.reset();
 };
 
 resetGame();
@@ -73,6 +77,8 @@ setInterval(() => {
     effects.tick(dt);
     collisions.tick();
     particles.tick(dt);
+    background.tick(dt);
+
     score += dt;
     maxScore = Math.max(score, maxScore);
     text.setText(getScoreText());
