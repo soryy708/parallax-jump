@@ -20,6 +20,7 @@ export class Player {
         this.renderable = new Renderable();
         this.renderable.type = 'ellipse';
         this.renderable.r = 8;
+        this.renderable.z = 1;
 
         // Collider
         this.collider = new CircleCollider(
