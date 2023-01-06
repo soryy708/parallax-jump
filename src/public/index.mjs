@@ -4,6 +4,7 @@ import { Renderable, Renderer } from './renderer.mjs';
 import { Scene } from './scene.mjs';
 import { canvasWidth, canvasHeight } from './game/globals.mjs';
 import { Player } from './game/player.mjs';
+import { EffectsContainer } from './game/effect.mjs';
 import { PlatformsContainer } from './game/platform.mjs';
 import { CollisionContainer } from './game/collision.mjs';
 import { ParticleContainer } from './game/particle.mjs';
@@ -31,6 +32,8 @@ const particles = new ParticleContainer(scene);
 
 const player = new Player(keyboard, collisions, particles, scene, canvas);
 const platforms = new PlatformsContainer(scene, collisions);
+const effects = new EffectsContainer(scene);
+
 let score = 0;
 let maxScore = Number(window.localStorage.getItem('maxScore') || '0');
 const getScoreText = () => maxScore === score ? Math.floor(score) : `${Math.floor(score)}/${Math.floor(maxScore)}`;
@@ -67,6 +70,7 @@ setInterval(() => {
     const dt = deltaTimeRepo.get();
     player.tick(dt);
     platforms.tick(dt);
+    effects.tick(dt);
     collisions.tick();
     particles.tick(dt);
     score += dt;
