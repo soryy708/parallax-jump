@@ -8,7 +8,7 @@ import { EffectsContainer } from './game/effect.mjs';
 import { PlatformsContainer } from './game/platform.mjs';
 import { CollisionContainer } from './game/collision.mjs';
 import { ParticleContainer } from './game/particle.mjs';
-import { TextEntity } from './game/text.mjs';
+import { TargetContainer } from './game/target.mjs';
 import { Background } from './game/background.mjs';
 import { Score } from './game/score.mjs';
 
@@ -32,10 +32,11 @@ renderer.addScene(scene);
 const collisions = new CollisionContainer();
 const particles = new ParticleContainer(scene);
 
-const player = new Player(keyboard, collisions, particles, scene, canvas);
+const score = new Score(scene);
+const player = new Player(keyboard, collisions, particles, scene, canvas, score);
 const platforms = new PlatformsContainer(scene, collisions);
 const effects = new EffectsContainer(scene);
-const score = new Score(scene);
+const targets = new TargetContainer(scene, collisions);
 
 class Floor {
     constructor() {
@@ -56,6 +57,7 @@ const background = new Background(document.getElementsByTagName('body')[0]);
 
 const resetGame = () => {
     platforms.clearAll();
+    targets.clearAll();
     player.reset();
     platforms.spawnFirstPlatform();
     score.reset();
@@ -68,6 +70,7 @@ setInterval(() => {
     const dt = deltaTimeRepo.get();
     player.tick(dt);
     platforms.tick(dt);
+    targets.tick(dt);
     effects.tick(dt);
     collisions.tick();
     particles.tick(dt);

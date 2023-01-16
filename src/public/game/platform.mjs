@@ -9,6 +9,7 @@ const maxPlatformVelocity = -5;
 
 export class Platform {
     constructor(height, velocity) {
+        this.label = 'platform';
 
         this.maxWidth = 48;
         this.minWidth = 16;

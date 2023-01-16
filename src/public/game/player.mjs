@@ -8,12 +8,13 @@ import { PlayerIndicator } from './indicator.mjs';
 const g = 9.8; // https://en.wikipedia.org/wiki/Gravitational_constant
 
 export class Player {
-    constructor(keyboard, collisions, particles, scene, canvas) {
+    constructor(keyboard, collisions, particles, scene, canvas, score) {
         this.keyboard = keyboard;
         this.collisions = collisions;
         this.particles = particles;
         this.scene = scene;
         this.canvas = canvas;
+        this.score = score;
         this.canvasRotation = 10;
 
         // Renderable
@@ -166,7 +167,7 @@ export class Player {
 
     tick(dt) {
         const remainingDoubleJump = this.doubleJumped ? (this.jumping ? (1 - this.jumpTime / this.maxJumpTime) : 0) : 1;
-        const jumpIndicator = this.colliding ? 1 : remainingDoubleJump;
+        const jumpIndicator = this.collidingWithPlatform ? 1 : remainingDoubleJump;
         const yellowness = jumpIndicator;
         this.renderable.colorB = 1 - yellowness;
 
@@ -175,12 +176,14 @@ export class Player {
             this.died = true;
         }
 
-        const colliders = this.collisions.getColliders(this);
-        const platformWeStandOn = colliders.find(collider => collider.collider.h >= canvasHeight - (this.collider.y + this.collider.r));
-        this.colliding = this.collider.y === canvasHeight || platformWeStandOn;
-        if (this.colliding) {
+        const allColliders = this.collisions.getColliders(this);
+        const platformColliders = allColliders.filter(collider => collider.label === 'platform');
+        const targetColliders = allColliders.filter(collider => collider.label === 'target');
+        const platformWeStandOn = platformColliders.find(collider => collider.collider.h >= canvasHeight - (this.collider.y + this.collider.r));
+        this.collidingWithPlatform = this.collider.y === canvasHeight || platformWeStandOn;
+        if (this.collidingWithPlatform) {
             if (this.timeFromCollisionEnd > 0) {
-                colliders.forEach(this.onCollisionWithPlatform.bind(this));
+                platformColliders.forEach(this.onCollisionWithPlatform.bind(this));
             } else {
                 this.canvas.style.transform = `rotateX(0)`;
             }
@@ -189,6 +192,11 @@ export class Player {
             this.timeFromCollisionEnd += dt;
             this.renderable.r2 = this.renderable.r;
         }
+
+        targetColliders.forEach(target => {
+            target.onCollect();
+            this.score.onCollect(target);
+        });
 
         if (this.jumping) {
             if (this.isDoubleJump()) {
@@ -204,7 +212,7 @@ export class Player {
             if (this.jumpTime >= this.maxJumpTime) {
                 this.jumping = false;
             }
-        } else if (this.colliding && platformWeStandOn || this.collider.y === canvasHeight) {
+        } else if (this.collidingWithPlatform && platformWeStandOn || this.collider.y === canvasHeight) {
             if (this.velocityY >= 0) {
                 this.acceleration = 0;
                 this.velocityY = 0;
@@ -239,7 +247,7 @@ export class Player {
     }
 
     canJump() {
-        return this.colliding || this.timeFromCollisionEnd < this.jumpGrace || (this.isDoubleJump() && !this.doubleJumped);
+        return this.collidingWithPlatform || this.timeFromCollisionEnd < this.jumpGrace || (this.isDoubleJump() && !this.doubleJumped);
     }
 
     isDoubleJump() {

@@ -15,10 +15,13 @@ export class Score {
         return this.maxScore === this.score ? Math.floor(this.score) : `${Math.floor(this.score)}/${Math.floor(this.maxScore)}`;
     }
 
-    tick(dt) {
-        this.score += dt;
+    tick() {
         this.maxScore = Math.max(this.score, this.maxScore);
         this.text.setText(this.getScoreText());
+    }
+
+    onCollect() {
+        this.score += 7;
     }
 
     reset() {
