@@ -1,6 +1,4 @@
 import { hslToRgb } from './color.mjs';
-// gradient top rgb(31, 52, 96) = hsl(221, 0.512, 0.249)
-// gradient bottom rgb(4, 18, 49) = hsl(221, 0.849, 0.104)
 
 const initialHue = 221;
 const initialSaturation = 0.512;
