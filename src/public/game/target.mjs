@@ -3,6 +3,9 @@ import { CircleCollider } from './collision.mjs';
 import { canvasWidth, canvasHeight } from './globals.mjs';
 import { clamp, randomInRange } from './util.mjs';
 
+export const targetMinVelocity = 20;
+export const targetMaxVelocity = 32;
+
 export class Target {
     constructor(y, velocity) {
         this.label = 'target';
@@ -19,7 +22,7 @@ export class Target {
 
         this.velocity = velocity;
 
-        const collisionBufferRadius = 4;
+        const collisionBufferRadius = 8;
         this.collider = new CircleCollider(this.renderable.x, this.renderable.y, this.renderable.r + collisionBufferRadius);
     }
 
@@ -67,9 +70,7 @@ export class TargetContainer {
     }
 
     spawn() {
-        const minVelocity = 20;
-        const maxVelocity = 32;
-        const velocity = randomInRange(minVelocity, maxVelocity);
+        const velocity = randomInRange(targetMinVelocity, targetMaxVelocity);
         const minY = 8;
         const y = randomInRange(minY, canvasHeight / 2);
         const target = new Target(y, velocity);

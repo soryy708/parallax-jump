@@ -1,4 +1,5 @@
 import { TextEntity } from './text.mjs';
+import { targetMinVelocity, targetMaxVelocity } from './target.mjs';
 
 export class Score {
     constructor(scene) {
@@ -20,8 +21,11 @@ export class Score {
         this.text.setText(this.getScoreText());
     }
 
-    onCollect() {
-        this.score += 7;
+    onCollect(target) {
+        const baseScore = 7;
+        const velocityUtilization = (target.velocity - targetMinVelocity) / (targetMaxVelocity - targetMinVelocity);
+        const velocityBonus = Math.round(5 * velocityUtilization);
+        this.score += baseScore + velocityBonus;
     }
 
     reset() {
