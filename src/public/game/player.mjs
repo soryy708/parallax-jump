@@ -163,7 +163,7 @@ export class Player {
         const particleCount = 4;
         for (let i = 0; i < particleCount; ++i) {
             const spread = 8;
-            const particleRadius = randomInRange(2, 6);
+            const particleRadius = randomInRange(2, target.renderable.r);
             const particleVelocityX = randomInRange(-1 * spread, spread) - target.velocity + Math.max(0, this.velocityX) * 2;
             const particleVelocityY = randomInRange(-1 * spread, spread);
             const particleTtl = randomInRange(2, 5);
@@ -175,9 +175,9 @@ export class Player {
                 particleVelocityY,
                 particleTtl
             );
-            particle.renderable.colorR = 0;
-            particle.renderable.colorG = 255;
-            particle.renderable.colorB = 0;
+            particle.renderable.colorR = target.renderable.colorR;
+            particle.renderable.colorG = target.renderable.colorG;
+            particle.renderable.colorB = target.renderable.colorB;
             this.particles.add(particle);
         }
     }
