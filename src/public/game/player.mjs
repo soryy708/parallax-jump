@@ -159,6 +159,29 @@ export class Player {
         this.particles.add(particle);
     }
 
+    createTargetCollectionParticleCloud(target) {
+        const particleCount = 4;
+        for (let i = 0; i < particleCount; ++i) {
+            const spread = 8;
+            const particleRadius = randomInRange(2, 6);
+            const particleVelocityX = randomInRange(-1 * spread, spread) - target.velocity + Math.max(0, this.velocityX) * 2;
+            const particleVelocityY = randomInRange(-1 * spread, spread);
+            const particleTtl = randomInRange(2, 5);
+            const particle = new Particle(
+                target.renderable.x,
+                target.renderable.y + target.renderable.r / 2,
+                particleRadius,
+                particleVelocityX,
+                particleVelocityY,
+                particleTtl
+            );
+            particle.renderable.colorR = 0;
+            particle.renderable.colorG = 255;
+            particle.renderable.colorB = 0;
+            this.particles.add(particle);
+        }
+    }
+
     onCollisionWithPlatform(collider) {
         this.createLandingParticleCloud(collider.velocity || 0);
         this.renderable.r2 = this.renderable.r * 0.75;
@@ -194,6 +217,7 @@ export class Player {
         }
 
         targetColliders.forEach(target => {
+            this.createTargetCollectionParticleCloud(target);
             target.onCollect();
             this.score.onCollect(target);
         });
