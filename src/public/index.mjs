@@ -10,6 +10,7 @@ import { CollisionContainer } from './game/collision.mjs';
 import { ParticleContainer } from './game/particle.mjs';
 import { TextEntity } from './game/text.mjs';
 import { Background } from './game/background.mjs';
+import { Score } from './game/score.mjs';
 
 const logicFps = 60;
 const canvas = document.getElementById('main');
@@ -34,12 +35,7 @@ const particles = new ParticleContainer(scene);
 const player = new Player(keyboard, collisions, particles, scene, canvas);
 const platforms = new PlatformsContainer(scene, collisions);
 const effects = new EffectsContainer(scene);
-
-let score = 0;
-let maxScore = Number(window.localStorage.getItem('maxScore') || '0');
-const getScoreText = () => maxScore === score ? Math.floor(score) : `${Math.floor(score)}/${Math.floor(maxScore)}`;
-const text = new TextEntity(getScoreText(), 0, 32, 32);
-scene.addEntity(text);
+const score = new Score(scene);
 
 class Floor {
     constructor() {
@@ -62,9 +58,7 @@ const resetGame = () => {
     platforms.clearAll();
     player.reset();
     platforms.spawnFirstPlatform();
-    maxScore = Math.max(score, maxScore);
-    window.localStorage.setItem('maxScore', `${maxScore}`);
-    score = 0;
+    score.reset();
     background.reset();
 };
 
@@ -78,10 +72,7 @@ setInterval(() => {
     collisions.tick();
     particles.tick(dt);
     background.tick(dt);
-
-    score += dt;
-    maxScore = Math.max(score, maxScore);
-    text.setText(getScoreText());
+    score.tick(dt);
 
     if (player.isDead()) {
         resetGame();
