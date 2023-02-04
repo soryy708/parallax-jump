@@ -32,7 +32,7 @@ export class Target {
     }
 
     isExpired() {
-        return this.collected || this.renderable.x <= -1 * this.renderable.w;
+        return this.collected || this.renderable.x <= -1 * this.renderable.r;
     }
 
     onCollect() {
