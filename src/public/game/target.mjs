@@ -3,8 +3,8 @@ import { CircleCollider } from './collision.mjs';
 import { canvasWidth, canvasHeight } from './globals.mjs';
 import { clamp, randomInRange } from './util.mjs';
 
-export const targetMinVelocity = 20;
-export const targetMaxVelocity = 32;
+export const targetMinVelocity = 15;
+export const targetMaxVelocity = 26;
 
 export class Target {
     constructor(y, velocity) {
